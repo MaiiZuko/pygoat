@@ -61,17 +61,12 @@ def ssrf_code_checker(request):
 def log_function_checker(request):
     if request.method == 'POST':
         csrf_token = request.POST.get("csrfmiddlewaretoken")
-        log_code = request.POST.get('log_code')
-        api_code = request.POST.get('api_code')
-        dirname = os.path.dirname(__file__)
-        log_filename = os.path.join(dirname, "playground/A9/main.py")
-        api_filename = os.path.join(dirname, "playground/A9/api.py")
-        f = open(log_filename,"w")
-        f.write(log_code)
-        f.close()
-        f = open(api_filename,"w")
-        f.write(api_code)
-        f.close()
+        log_code = (request.POST.get('log_code') or '').strip().lower()
+        api_code = (request.POST.get('api_code') or '').strip().lower()
+        allowed_log_codes = {'default', 'minimal', 'verbose'}
+        allowed_api_codes = {'default', 'secure'}
+        if log_code not in allowed_log_codes or api_code not in allowed_api_codes:
+        return JsonResponse({"message":"invalid parameters"},status = 400)
         # Clearing the log file before starting the test
         f = open('test.log', 'w')
         f.write("")
