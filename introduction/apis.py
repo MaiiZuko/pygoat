@@ -1,10 +1,10 @@
+from django.views.decorators.csrf import csrf_protect
 import time
 
 import requests
 from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
 from django.shortcuts import redirect
-from django.views.decorators.csrf import csrf_exempt
 
 from introduction.playground.A6.utility import check_vuln
 from introduction.playground.A9.main import Log
@@ -19,7 +19,7 @@ from .views import authentication_decorator
 # 2. extract inputs form 2nd code 
 # 3. Run the code 
 # 4. get the result
-@csrf_exempt
+@csrf_protect
 def ssrf_code_checker(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
